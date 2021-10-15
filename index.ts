@@ -31,6 +31,7 @@ interface Tile {
     color(g: CanvasRenderingContext2D): void;
     draw(g: CanvasRenderingContext2D, x: number, y: number): void;
     moveHorizontal(dx: number): void;
+    moveVertical(dy: number): void;
 }
 
 class Air implements Tile {
@@ -52,6 +53,9 @@ class Air implements Tile {
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
     moveHorizontal(dx: number) {
         moveToTile(playerx + dx, playery);
+    };
+    moveVertical(dy: number) {
+        moveToTile(playerx, playery + dy);
     };
 }
 
@@ -80,6 +84,9 @@ class Flux implements Tile {
     moveHorizontal(dx: number) {
         moveToTile(playerx + dx, playery);
     };
+    moveVertical(dy: number) {
+        moveToTile(playerx, playery + dy);
+    };
 }
 
 class Unbreakable implements Tile {
@@ -105,6 +112,7 @@ class Unbreakable implements Tile {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
+    moveVertical(dy: number) { };
 }
 
 class Player implements Tile {
@@ -125,6 +133,7 @@ class Player implements Tile {
     color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
     moveHorizontal(dx: number) { };
+    moveVertical(dy: number) { };
 }
 
 class Stone implements Tile {
@@ -156,6 +165,7 @@ class Stone implements Tile {
             moveToTile(playerx + dx, playery);
       }
     };
+    moveVertical(dy: number) { };
 }
 
 class FallingStone implements Tile {
@@ -181,6 +191,7 @@ class FallingStone implements Tile {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
+    moveVertical(dy: number) { };
 }
 
 class Box implements Tile {
@@ -212,6 +223,7 @@ class Box implements Tile {
             moveToTile(playerx + dx, playery);
         }
     };
+    moveVertical(dy: number) { };
 }
 
 class FallingBox implements Tile {
@@ -237,6 +249,7 @@ class FallingBox implements Tile {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
+    moveVertical(dy: number) { };
 }
 
 class Key1 implements Tile {
@@ -265,6 +278,10 @@ class Key1 implements Tile {
         removeLock1();
         moveToTile(playerx + dx, playery)
      };
+    moveVertical(dy: number) {
+        removeLock1();
+        moveToTile(playerx, playery + dy);
+    };
 }
 
 class Lock1 implements Tile {
@@ -290,6 +307,7 @@ class Lock1 implements Tile {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
+    moveVertical(dy: number) { };
 }
 
 class Key2 implements Tile {
@@ -318,6 +336,10 @@ class Key2 implements Tile {
         removeLock2();
         moveToTile(playerx + dx, playery)
     };
+    moveVertical(dy: number) {
+        removeLock2();
+        moveToTile(playerx, playery + dy);
+    };
 }
 
 class Lock2 implements Tile {
@@ -343,6 +365,7 @@ class Lock2 implements Tile {
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
+    moveVertical(dy: number) { };
 }
 
 enum RawInput {
@@ -362,7 +385,7 @@ class Up implements Input {
     isDown() {return false};
     isLeft() {return false};
     isRight() {return false};
-    handle() {moveVertical(-1);}
+    handle() {map[playery - 1][playerx].moveVertical(-1);}
 }
 
 class Down implements Input {
@@ -370,7 +393,7 @@ class Down implements Input {
     isDown() {return true};
     isLeft() {return false};
     isRight() {return false};
-    handle() {moveVertical(1);}
+    handle() {map[playery + 1][playerx].moveVertical(1);}
 }
 
 class Left implements Input {
@@ -459,19 +482,6 @@ function moveToTile(newx: number, newy: number) {
   map[newy][newx] = new Player();
   playerx = newx;
   playery = newy;
-}
-
-function moveVertical(dy: number) {
-  if (map[playery + dy][playerx].isFlux()
-    || map[playery + dy][playerx].isAir()) {
-    moveToTile(playerx, playery + dy);
-  } else if (map[playery + dy][playerx].isKey1()) {
-    removeLock1();
-    moveToTile(playerx, playery + dy);
-  } else if (map[playery + dy][playerx].isKey2()) {
-    removeLock2();
-    moveToTile(playerx, playery + dy);
-  }
 }
 
 function update() {
