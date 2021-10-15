@@ -26,6 +26,8 @@ interface Tile {
     isLock1(): boolean;
     isKey2(): boolean;
     isLock2(): boolean;
+    isEdible(): boolean;
+    isPushable(): boolean;
     color(g: CanvasRenderingContext2D): void;
     draw(g: CanvasRenderingContext2D, x: number, y: number): void;
 }
@@ -43,6 +45,8 @@ class Air implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return true};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
 }
@@ -60,6 +64,8 @@ class Flux implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return true};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
         g.fillStyle = "#ccffcc"
     };
@@ -82,6 +88,8 @@ class Unbreakable implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
         g.fillStyle = "#999999"
     };
@@ -104,6 +112,8 @@ class Player implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
 }
@@ -121,6 +131,8 @@ class Stone implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return true};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#0000cc"
     };
@@ -143,6 +155,8 @@ class FallingStone implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#0000cc"
     };
@@ -165,6 +179,8 @@ class Box implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return true};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#8b4513"
     };
@@ -187,6 +203,8 @@ class FallingBox implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#8b4513"
     };
@@ -209,6 +227,8 @@ class Key1 implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#ffcc00"
     };
@@ -231,6 +251,8 @@ class Lock1 implements Tile {
     isLock1() {return true};
     isKey2() {return false};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#ffcc00"
     };
@@ -253,6 +275,8 @@ class Key2 implements Tile {
     isLock1() {return false};
     isKey2() {return true};
     isLock2() {return false};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#00ccff"
     };
@@ -275,6 +299,8 @@ class Lock2 implements Tile {
     isLock1() {return false};
     isKey2() {return false};
     isLock2() {return true};
+    isEdible() {return false};
+    isPushable() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#00ccff"
     };
@@ -360,6 +386,7 @@ function transformTile(tile: RawTile) {
         default: assertExhausted(tile);
     }
 }
+
 function transformMap() {
     map = new Array(rawMap.length);
     for (let y = 0; y < rawMap.length; y++) {
@@ -400,11 +427,9 @@ function moveToTile(newx: number, newy: number) {
 }
 
 function moveHorizontal(dx: number) {
-  if (map[playery][playerx + dx].isFlux()
-    || map[playery][playerx + dx].isAir()) {
+  if (map[playery][playerx + dx].isEdible()) {
     moveToTile(playerx + dx, playery);
-  } else if ((map[playery][playerx + dx].isStone()
-    || map[playery][playerx + dx].isBox())
+  } else if ((map[playery][playerx + dx].isPushable())
     && map[playery][playerx + dx + dx].isAir()
     && !map[playery + 1][playerx + dx].isAir()) {
     map[playery][playerx + dx + dx] = map[playery][playerx + dx];
