@@ -88,6 +88,11 @@ function update() {
 function handleInputs() {
   while (inputs.length > 0) {
     let current = inputs.pop();
+    handleInput(current);
+  }
+}
+
+function handleInput(current: Input) {
     if (current === Input.LEFT)
       moveHorizontal(-1);
     else if (current === Input.RIGHT)
@@ -96,7 +101,6 @@ function handleInputs() {
       moveVertical(-1);
     else if (current === Input.DOWN)
       moveVertical(1);
-  }
 }
 
 function updateMap() {
