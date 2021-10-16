@@ -18,9 +18,7 @@ interface Tile {
     isFlux(): boolean;
     isUnbreakable(): boolean;
     isPlayer(): boolean;
-    isStone(): boolean;
     isFallingStone(): boolean;
-    isBox(): boolean;
     isFallingBox(): boolean;
     isKey1(): boolean;
     isLock1(): boolean;
@@ -41,9 +39,7 @@ class Air implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -68,9 +64,7 @@ class Flux implements Tile {
     isFlux() {return true};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -100,9 +94,7 @@ class Unbreakable implements Tile {
     isFlux() {return false};
     isUnbreakable() {return true};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -128,9 +120,7 @@ class Player implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return true};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -151,9 +141,7 @@ class Stone implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return true};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -185,9 +173,7 @@ class FallingStone implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return true};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -213,9 +199,7 @@ class Box implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return true};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -247,9 +231,7 @@ class FallingBox implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return true};
     isKey1() {return false};
     isLock1() {return false};
@@ -275,9 +257,7 @@ class Key1 implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return true};
     isLock1() {return false};
@@ -309,9 +289,7 @@ class Lock1 implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return true};
@@ -337,9 +315,7 @@ class Key2 implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
@@ -371,9 +347,7 @@ class Lock2 implements Tile {
     isFlux() {return false};
     isUnbreakable() {return false};
     isPlayer() {return false};
-    isStone() {return false};
     isFallingStone() {return false};
-    isBox() {return false};
     isFallingBox() {return false};
     isKey1() {return false};
     isLock1() {return false};
