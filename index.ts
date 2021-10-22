@@ -29,6 +29,7 @@ interface Tile {
     isPushable(): boolean;
     isStony(): boolean;
     isBoxy(): boolean;
+    canFall(): boolean;
     color(g: CanvasRenderingContext2D): void;
     draw(g: CanvasRenderingContext2D, x: number, y: number): void;
     moveHorizontal(dx: number): void;
@@ -53,6 +54,7 @@ class Air implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
     moveHorizontal(dx: number) {
@@ -81,6 +83,7 @@ class Flux implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) {
         g.fillStyle = "#ccffcc";
     };
@@ -114,6 +117,7 @@ class Unbreakable implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) {
         g.fillStyle = "#999999";
     };
@@ -143,6 +147,7 @@ class Player implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
     moveHorizontal(dx: number) { };
@@ -193,6 +198,7 @@ class Stone implements Tile {
     isPushable() {return true};
     isStony() {return true};
     isBoxy() {return false};
+    canFall() {return true};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#0000cc";
     };
@@ -232,6 +238,7 @@ class Box implements Tile {
     isPushable() {return true};
     isStony() {return false};
     isBoxy() {return true};
+    canFall() {return true};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#8b4513";
     };
@@ -267,6 +274,7 @@ class Key1 implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#ffcc00";
     };
@@ -302,6 +310,7 @@ class Lock1 implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#ffcc00";
     };
@@ -331,6 +340,7 @@ class Key2 implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#00ccff";
     };
@@ -366,6 +376,7 @@ class Lock2 implements Tile {
     isPushable() {return false};
     isStony() {return false};
     isBoxy() {return false};
+    canFall() {return false};
     color(g: CanvasRenderingContext2D) {
             g.fillStyle = "#00ccff";
     };
@@ -516,9 +527,8 @@ function updateMap() {
 }
 
 function updateTile(x: number, y: number) {
-    if ((map[y][x].isStony()
-    || map[y][x].isBoxy())
-    && map[y + 1][x].isAir()) {
+    if (map[y][x].canFall()
+            && map[y + 1][x].isAir()) {
         map[y][x].drop();
         map[y + 1][x] = map[y][x];
         map[y][x] = new Air();
