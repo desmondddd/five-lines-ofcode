@@ -19,7 +19,6 @@ interface Tile {
     isLock1(): boolean;
     isLock2(): boolean;
     canFall(): boolean;
-    color(g: CanvasRenderingContext2D): void;
     draw(g: CanvasRenderingContext2D, x: number, y: number): void;
     moveHorizontal(dx: number): void;
     moveVertical(dy: number): void;
@@ -32,7 +31,6 @@ class Air implements Tile {
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
-    color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
     moveHorizontal(dx: number) {
         moveToTile(playerx + dx, playery);
@@ -49,11 +47,8 @@ class Flux implements Tile {
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
-    color(g: CanvasRenderingContext2D) {
-        g.fillStyle = "#ccffcc";
-    };
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
+        g.fillStyle = "#ccffcc";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) {
@@ -71,11 +66,8 @@ class Unbreakable implements Tile {
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
-    color(g: CanvasRenderingContext2D) {
-        g.fillStyle = "#999999";
-    };
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
+        g.fillStyle = "#999999";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
@@ -89,7 +81,6 @@ class Player implements Tile {
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
-    color(g: CanvasRenderingContext2D) { };
     draw(g: CanvasRenderingContext2D, x: number, y: number) { };
     moveHorizontal(dx: number) { };
     moveVertical(dy: number) { };
@@ -147,11 +138,8 @@ class Stone implements Tile {
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return true};
-    color(g: CanvasRenderingContext2D) {
-            g.fillStyle = "#0000cc";
-    };
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
+        g.fillStyle = "#0000cc";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) {
@@ -173,11 +161,8 @@ class Box implements Tile {
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return true};
-    color(g: CanvasRenderingContext2D) {
-            g.fillStyle = "#8b4513";
-    };
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
+        g.fillStyle = "#8b4513";
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) {
@@ -189,83 +174,43 @@ class Box implements Tile {
     };
 }
 
-class Key1 implements Tile {
+class Key implements Tile {
+    constructor(
+        private color: string,
+        private removeStrategy: RemoveStrategy) 
+        { }
     isAir() {return false};
     isFalling() { return false };
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
-    color(g: CanvasRenderingContext2D) {
-            g.fillStyle = "#ffcc00";
-    };
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
+        g.fillStyle = this.color;
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) {
-        remove(new RemoveLock1());
+        remove(this.removeStrategy);
         moveToTile(playerx + dx, playery)
      };
     moveVertical(dy: number) {
-        remove(new RemoveLock1());
+        remove(this.removeStrategy);
         moveToTile(playerx, playery + dy);
     };
     update(x: number, y: number) { };
 }
 
-class Lock1 implements Tile {
+class Lock implements Tile {
+    constructor(
+        private color: string,
+        private lock1: boolean)
+        { };
     isAir() {return false};
     isFalling() { return false };
-    isLock1() {return true};
-    isLock2() {return false};
+    isLock1() {return this.lock1};
+    isLock2() {return !this.lock1};
     canFall() {return false};
-    color(g: CanvasRenderingContext2D) {
-            g.fillStyle = "#ffcc00";
-    };
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
-        g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-    };
-    moveHorizontal(dx: number) { };
-    moveVertical(dy: number) { };
-    update(x: number, y: number) { };
-}
-
-class Key2 implements Tile {
-    isAir() {return false};
-    isFalling() { return false };
-    isLock1() {return false};
-    isLock2() {return false};
-    canFall() {return false};
-    color(g: CanvasRenderingContext2D) {
-            g.fillStyle = "#00ccff";
-    };
-    draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
-        g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-    };
-    moveHorizontal(dx: number) { 
-        remove(new RemoveLock2());
-        moveToTile(playerx + dx, playery)
-    };
-    moveVertical(dy: number) {
-        remove(new RemoveLock2());
-        moveToTile(playerx, playery + dy);
-    };
-    update(x: number, y: number) { };
-}
-
-class Lock2 implements Tile {
-    isAir() {return false};
-    isFalling() { return false };
-    isLock1() {return false};
-    isLock2() {return true};
-    canFall() {return false};
-    color(g: CanvasRenderingContext2D) {
-            g.fillStyle = "#00ccff";
-    };
-    draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        map[y][x].color(g);
+        g.fillStyle = this.color;
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
@@ -342,10 +287,10 @@ function transformTile(tile: RawTile) {
         case RawTile.FALLING_STONE: return new Stone(new Falling());
         case RawTile.BOX: return new Box(new Resting());
         case RawTile.FALLING_BOX: return new Box(new Falling());
-        case RawTile.KEY1: return new Key1();
-        case RawTile.LOCK1: return new Lock1();
-        case RawTile.KEY2: return new Key2();
-        case RawTile.LOCK2: return new Lock2();
+        case RawTile.KEY1: return new Key("#ffcc00", new RemoveLock1());
+        case RawTile.LOCK1: return new Lock("#ffcc00", true);
+        case RawTile.KEY2: return new Key("#00ccff", new RemoveLock2());
+        case RawTile.LOCK2: return new Lock("#00ccff", false);
         default: assertExhausted(tile);
     }
 }
