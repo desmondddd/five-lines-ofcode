@@ -382,73 +382,73 @@ function remove(shouldRemove: RemoveStrategy) {
     for (let y = 0; y < map.length; y++) {
         for (let x = 0; x < map[y].length; x++) {
             if (shouldRemove.check(map[y][x])) {
-            map[y][x] = new Air();
+                map[y][x] = new Air();
             }
         }
     }
 }
 
 function moveToTile(newx: number, newy: number) {
-  map[playery][playerx] = new Air();
-  map[newy][newx] = new Player();
-  playerx = newx;
-  playery = newy;
+    map[playery][playerx] = new Air();
+    map[newy][newx] = new Player();
+    playerx = newx;
+    playery = newy;
 }
 
 function update() {
-  handleInputs();
-  updateMap();
+    handleInputs();
+    updateMap();
 }
 
 function handleInputs() {
   while (inputs.length > 0) {
-    let input = inputs.pop();
-    input.handle();
+      let input = inputs.pop();
+      input.handle();
   }
 }
 
 function updateMap() {
-  for (let y = map.length - 1; y >= 0; y--) {
-    for (let x = 0; x < map[y].length; x++) {
-      map[y][x].update(x, y);
+    for (let y = map.length - 1; y >= 0; y--) {
+        for (let x = 0; x < map[y].length; x++) {
+            map[y][x].update(x, y);
+        }   
     }
-  }
 }
 
 function createGraphics() {
-  let canvas = document.getElementById("GameCanvas") as HTMLCanvasElement;
-  let g = canvas.getContext("2d");
-  g.clearRect(0, 0, canvas.width, canvas.height);
-  return g;
+    let canvas = document.getElementById("GameCanvas") as HTMLCanvasElement;
+    let g = canvas.getContext("2d");
+    g.clearRect(0, 0, canvas.width, canvas.height);
+    return g;
 }
 
 function draw() {
-  let g = createGraphics();
-  drawMap(g);
-  drawPlayer(g);
+    let g = createGraphics();
+    drawMap(g);
+    drawPlayer(g);
 }
 
 function drawMap(g: CanvasRenderingContext2D) {
-  for (let y = 0; y < map.length; y++) {
-    for (let x = 0; x < map[y].length; x++) {
-        map[y][x].draw(g, x, y);
+    for (let y = 0; y < map.length; y++) {
+        for (let x = 0; x < map[y].length; x++) {
+            map[y][x].draw(g, x, y);
+        }
     }
-  }
 }
 
 function drawPlayer(g: CanvasRenderingContext2D) {
-  g.fillStyle = "#ff0000";
-  g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    g.fillStyle = "#ff0000";
+    g.fillRect(playerx * TILE_SIZE, playery * TILE_SIZE, TILE_SIZE, TILE_SIZE);
 }
 
 function gameLoop() {
-  let before = Date.now();
-  update();
-  draw();
-  let after = Date.now();
-  let frameTime = after - before;
-  let sleep = SLEEP - frameTime;
-  setTimeout(() => gameLoop(), sleep);
+    let before = Date.now();
+    update();
+    draw();
+    let after = Date.now();
+    let frameTime = after - before;
+    let sleep = SLEEP - frameTime;
+    setTimeout(() => gameLoop(), sleep);
 }
 
 window.onload = () => {
@@ -461,9 +461,9 @@ const UP_KEY = "ArrowUp";
 const RIGHT_KEY = "ArrowRight";
 const DOWN_KEY = "ArrowDown";
 window.addEventListener("keydown", e => {
-  if (e.key === LEFT_KEY || e.key === "a") inputs.push(new Left());
-  else if (e.key === UP_KEY || e.key === "w") inputs.push(new Up());
-  else if (e.key === RIGHT_KEY || e.key === "d") inputs.push(new Right());
-  else if (e.key === DOWN_KEY || e.key === "s") inputs.push(new Down());
+    if (e.key === LEFT_KEY || e.key === "a") inputs.push(new Left());
+    else if (e.key === UP_KEY || e.key === "w") inputs.push(new Up());
+    else if (e.key === RIGHT_KEY || e.key === "d") inputs.push(new Right());
+    else if (e.key === DOWN_KEY || e.key === "s") inputs.push(new Down());
 });
 
