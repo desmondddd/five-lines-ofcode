@@ -180,9 +180,9 @@ class KeyConfiguration {
         private _1: boolean,
         private removeStrategy: RemoveStrategy)
         { };
-    getColor() {return this.color};
+    removeLock() {remove(this.removeStrategy)};
+    setColor(g: CanvasRenderingContext2D) {g.fillStyle = this.color};
     is1() {return this._1};
-    getRemoveStrategy() {return this.removeStrategy};
 }
 
 class Key implements Tile {
@@ -195,15 +195,15 @@ class Key implements Tile {
     isLock2() {return false};
     canFall() {return false};
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        g.fillStyle = this.keyConf.getColor() ;
+        this.keyConf.setColor(g);
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) {
-        remove(this.keyConf.getRemoveStrategy());
+        this.keyConf.removeLock();
         moveToTile(playerx + dx, playery)
      };
     moveVertical(dy: number) {
-        remove(this.keyConf.getRemoveStrategy());
+        this.keyConf.removeLock();
         moveToTile(playerx, playery + dy);
     };
     update(x: number, y: number) { };
@@ -219,7 +219,7 @@ class Lock implements Tile {
     isLock2() {return !this.keyConf.is1()};
     canFall() {return false};
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        g.fillStyle = this.keyConf.getColor();
+        this.keyConf.setColor(g);
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
