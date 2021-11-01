@@ -174,10 +174,20 @@ class Box implements Tile {
     };
 }
 
-class Key implements Tile {
+class KeyConfiguration {
     constructor(
         private color: string,
-        private removeStrategy: RemoveStrategy) 
+        private _1: boolean,
+        private removeStrategy: RemoveStrategy)
+        { };
+    getColor() {return this.color};
+    is1() {return this._1};
+    getRemoveStrategy() {return this.removeStrategy};
+}
+
+class Key implements Tile {
+    constructor(
+        private keyConf: KeyConfiguration) 
         { }
     isAir() {return false};
     isFalling() { return false };
@@ -185,15 +195,15 @@ class Key implements Tile {
     isLock2() {return false};
     canFall() {return false};
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        g.fillStyle = this.color;
+        g.fillStyle = this.keyConf.getColor() ;
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) {
-        remove(this.removeStrategy);
+        remove(this.keyConf.getRemoveStrategy());
         moveToTile(playerx + dx, playery)
      };
     moveVertical(dy: number) {
-        remove(this.removeStrategy);
+        remove(this.keyConf.getRemoveStrategy());
         moveToTile(playerx, playery + dy);
     };
     update(x: number, y: number) { };
@@ -201,21 +211,36 @@ class Key implements Tile {
 
 class Lock implements Tile {
     constructor(
-        private color: string,
-        private lock1: boolean)
+        private keyConf: KeyConfiguration)
         { };
     isAir() {return false};
     isFalling() { return false };
-    isLock1() {return this.lock1};
-    isLock2() {return !this.lock1};
+    isLock1() {return this.keyConf.is1()};
+    isLock2() {return !this.keyConf.is1()};
     canFall() {return false};
     draw(g: CanvasRenderingContext2D, x: number, y: number) {
-        g.fillStyle = this.color;
+        g.fillStyle = this.keyConf.getColor();
         g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     };
     moveHorizontal(dx: number) { };
     moveVertical(dy: number) { };
     update(x: number, y: number) { };
+}
+
+interface RemoveStrategy {
+    check(tile: Tile): boolean;
+}
+
+class RemoveLock1 implements RemoveStrategy {
+    check(tile: Tile) {
+        return tile.isLock1();
+    }
+}
+
+class RemoveLock2 implements RemoveStrategy {
+    check(tile: Tile) {
+        return tile.isLock2();
+    }
 }
 
 enum RawInput {
@@ -277,6 +302,7 @@ let map: Tile[][];
 function assertExhausted(x: never): never {
     throw new Error("Unexpected object: " + x)
 }
+const YELLOW_KEY = new KeyConfiguration("#ffcc00", true, new RemoveLock1())
 function transformTile(tile: RawTile) {
     switch (tile) {
         case RawTile.AIR: return new Air();
@@ -287,10 +313,10 @@ function transformTile(tile: RawTile) {
         case RawTile.FALLING_STONE: return new Stone(new Falling());
         case RawTile.BOX: return new Box(new Resting());
         case RawTile.FALLING_BOX: return new Box(new Falling());
-        case RawTile.KEY1: return new Key("#ffcc00", new RemoveLock1());
-        case RawTile.LOCK1: return new Lock("#ffcc00", true);
-        case RawTile.KEY2: return new Key("#00ccff", new RemoveLock2());
-        case RawTile.LOCK2: return new Lock("#00ccff", false);
+        case RawTile.KEY1: return new Key(YELLOW_KEY);
+        case RawTile.LOCK1: return new Lock(YELLOW_KEY);
+        case RawTile.KEY2: return new Key(new KeyConfiguration("#00ccff", false, new RemoveLock2()));
+        case RawTile.LOCK2: return new Lock(new KeyConfiguration("#00ccff", true, new RemoveLock2()));
         default: assertExhausted(tile);
     }
 }
@@ -306,22 +332,6 @@ function transformMap() {
 }
 
 let inputs: Input[] = [];
-
-interface RemoveStrategy {
-    check(tile: Tile): boolean;
-}
-
-class RemoveLock1 implements RemoveStrategy {
-    check(tile: Tile) {
-        return tile.isLock1();
-    }
-}
-
-class RemoveLock2 implements RemoveStrategy {
-    check(tile: Tile) {
-        return tile.isLock2();
-    }
-}
 
 function remove(shouldRemove: RemoveStrategy) {
     for (let y = 0; y < map.length; y++) {
