@@ -15,7 +15,6 @@ enum RawTile {
 }
 interface Tile {
     isAir(): boolean;
-    isFalling(): boolean;
     isLock1(): boolean;
     isLock2(): boolean;
     canFall(): boolean;
@@ -27,7 +26,6 @@ interface Tile {
 
 class Air implements Tile {
     isAir() {return true};
-    isFalling() {return false};
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
@@ -43,7 +41,6 @@ class Air implements Tile {
 
 class Flux implements Tile {
     isAir() {return false};
-    isFalling() {return false};
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
@@ -62,7 +59,6 @@ class Flux implements Tile {
 
 class Unbreakable implements Tile {
     isAir() {return false};
-    isFalling() {return false};
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
@@ -77,7 +73,6 @@ class Unbreakable implements Tile {
 
 class Player implements Tile {
     isAir() {return false};
-    isFalling() {return false};
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
@@ -134,7 +129,6 @@ class Stone implements Tile {
         this.fallStrategy = new FallStrategy(falling);
     }
     isAir() {return false};
-    isFalling() {return this.fallStrategy.getFalling().isFalling()};
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return true};
@@ -157,7 +151,6 @@ class Box implements Tile {
         this.fallStrategy = new FallStrategy(falling);
     }
     isAir() {return false};
-    isFalling() {return this.fallStrategy.getFalling().isFalling()};
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return true};
@@ -190,7 +183,6 @@ class Key implements Tile {
         private keyConf: KeyConfiguration) 
         { }
     isAir() {return false};
-    isFalling() { return false };
     isLock1() {return false};
     isLock2() {return false};
     canFall() {return false};
@@ -214,7 +206,6 @@ class Lock implements Tile {
         private keyConf: KeyConfiguration)
         { };
     isAir() {return false};
-    isFalling() { return false };
     isLock1() {return this.keyConf.is1()};
     isLock2() {return !this.keyConf.is1()};
     canFall() {return false};
