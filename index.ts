@@ -258,10 +258,10 @@ class Player {
         if (map[this.y][this.x + dx + dx].isAir()
         && !map[this.y + 1][this.x + dx].isAir()) {
             map[this.y][this.x + dx + dx] = tile;
-            moveToTile(this.x + dx, this.y);
+            this.moveToTile(this.x + dx, this.y);
         }
     };
-    moveToTile(newx: number, newy: number) {
+    private moveToTile(newx: number, newy: number) {
         map[this.y][this.x] = new Air();
         map[newy][newx] = new PlayerTile();
         this.x = newx;
@@ -366,10 +366,6 @@ function remove(shouldRemove: RemoveStrategy) {
             }
         }
     }
-}
-
-function moveToTile(newx: number, newy: number) {
-    player.moveToTile(newx, newy);
 }
 
 function update() {
