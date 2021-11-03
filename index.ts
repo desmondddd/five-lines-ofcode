@@ -243,12 +243,16 @@ class RemoveLock2 implements RemoveStrategy {
 }
 
 class Player {
-    private playerx = 1;
-    private playery = 1;
-    getX() {return this.playerx};
-    getY() {return this.playery};
-    setX(x: number) {this.playerx = x};
-    setY(y: number) {this.playery = y};
+    private x = 1;
+    private y = 1;
+    getX() {return this.x};
+    getY() {return this.y};
+    setX(x: number) {this.x = x};
+    setY(y: number) {this.y = y};
+    draw(g: CanvasRenderingContext2D) {
+        g.fillStyle = "#ff0000";
+        g.fillRect(this.x * TILE_SIZE, this.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    };
 }
 let player = new Player();
 
@@ -384,10 +388,10 @@ function createGraphics() {
     return g;
 }
 
-function draw() {
+function draw(player: Player) {
     let g = createGraphics();
     drawMap(g);
-    drawPlayer(g);
+    player.draw(g);
 }
 
 function drawMap(g: CanvasRenderingContext2D) {
@@ -406,7 +410,7 @@ function drawPlayer(g: CanvasRenderingContext2D) {
 function gameLoop() {
     let before = Date.now();
     update();
-    draw();
+    draw(player);
     let after = Date.now();
     let frameTime = after - before;
     let sleep = SLEEP - frameTime;
