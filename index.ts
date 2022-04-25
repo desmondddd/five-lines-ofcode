@@ -736,7 +736,7 @@ let rawMap: RawTile[][] = [
   [2, 2, 2, 2, 2, 2, 2, 2],
 ]
 
-let map: Tile[][]
+let map: Tile[][] = []
 
 function assertExhausted(x: never): never {
   throw new Error('Unexpected object: ' + x)
@@ -773,7 +773,7 @@ function transformTile(tile: RawTile) {
   }
 }
 
-function transforMap() {
+function transformMap() {
   map = new Array(rawMap.length)
   for (let y = 0; y < rawMap.length; y++) {
     map[y] = new Array(rawMap[y].length)
@@ -785,7 +785,7 @@ function transforMap() {
 
 let inputs: Input[] = []
 
-function removeLock1(tile: Tile) {
+function removeLock1() {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       if (map[y][x].isLock1()) {
@@ -795,7 +795,7 @@ function removeLock1(tile: Tile) {
   }
 }
 
-function removeLock2(tile: Tile) {
+function removeLock2() {
   for (let y = 0; y < map.length; y++) {
     for (let x = 0; x < map[y].length; x++) {
       if (map[y][x].isLock2()) {
@@ -807,7 +807,7 @@ function removeLock2(tile: Tile) {
 
 function moveToTile(newx: number, newy: number) {
   map[playery][playerx] = new Air()
-  map[newy][newx] = new Player
+  map[newy][newx] = new Player()
   playerx = newx
   playery = newy
 }
@@ -823,10 +823,10 @@ function moveHorizontal(dx: number) {
     map[playery][playerx + dx + dx] = map[playery][playerx + dx]
     moveToTile(playerx + dx, playery)
   } else if (map[playery][playerx + dx].isKey1()) {
-    removeLock1(new Lock1())
+    removeLock1()
     moveToTile(playerx + dx, playery)
   } else if (map[playery][playerx + dx].isKey2()) {
-    removeLock2(new Lock2())
+    removeLock2()
     moveToTile(playerx + dx, playery)
   }
 }
@@ -836,10 +836,10 @@ function moveVertical(dy: number) {
     || map[playery + dy][playerx].isAir()) {
     moveToTile(playerx, playery + dy)
   } else if (map[playery + dy][playerx].isKey1()) {
-    removeLock1(new Lock1())
+    removeLock1()
     moveToTile(playerx, playery + dy)
   } else if (map[playery + dy][playerx].isKey2()) {
-    removeLock2(new Lock2())
+    removeLock2()
     moveToTile(playerx, playery + dy)
   }
 }
@@ -872,7 +872,7 @@ function updateTitle(y: number, x: number) {
   } else if ((map[y][x].isBox() || map[y][x].isFallingBox())
     && map[y + 1][x].isAir()) {
     map[y + 1][x] = new FallingBox()
-    map[y][x] = new Air
+    map[y][x] = new Air()
   } else if (map[y][x].isFallingStone()) {
     map[y][x] = new Box()
   } else if (map[y][x].isFallingBox()) {
@@ -918,7 +918,7 @@ function gameLoop() {
 }
 
 window.onload = () => {
-  transforMap()
+  transformMap()
   gameLoop()
 }
 
