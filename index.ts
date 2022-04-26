@@ -16,6 +16,12 @@ enum RawTile {
 interface Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number): void
 
+  moveHorizontal(dx: number): void
+
+  isEdible(): boolean
+
+  isPushable(): boolean
+
   isAir(): boolean
 
   isFlux(): boolean
@@ -43,6 +49,18 @@ interface Tile {
 
 class Air implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
+  }
+
+  moveHorizontal(dx: number) {
+    moveToTile(playerx + dx, playery)
+  }
+
+  isEdible(): boolean {
+    return true
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -92,12 +110,25 @@ class Air implements Tile {
   isLock2() {
     return false
   }
+
 }
 
 class Flux implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
     g.fillStyle = '#ccffcc'
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+  }
+
+  moveHorizontal(dx: number) {
+    moveToTile(playerx + dx, playery)
+  }
+
+  isEdible(): boolean {
+    return true
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -155,6 +186,17 @@ class Unbreakable implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   }
 
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return false
+  }
+
+  isPushable(): boolean {
+    return false
+  }
+
   isAir() {
     return false
   }
@@ -206,6 +248,17 @@ class Unbreakable implements Tile {
 
 class Player implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
+  }
+
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return false
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -263,6 +316,17 @@ class Stone implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   }
 
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return true
+  }
+
   isAir() {
     return false
   }
@@ -316,6 +380,17 @@ class FallingStone implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
     g.fillStyle = '#0000cc'
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+  }
+
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -373,6 +448,22 @@ class Box implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   }
 
+  moveHorizontal(dx: number) {
+    if (map[playery][playerx + dx + dx].isAir()
+      && !map[playery + 1][playerx + dx].isAir()) {
+      map[playery][playerx + dx + dx] = this
+      moveToTile(playerx + dx, playery)
+    }
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return true
+  }
+
   isAir() {
     return false
   }
@@ -426,6 +517,17 @@ class FallingBox implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
     g.fillStyle = '#8b4513'
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+  }
+
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -483,6 +585,19 @@ class Key1 implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   }
 
+  moveHorizontal(dx: number) {
+    removeLock1()
+    moveToTile(playerx + dx, playery)
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return false
+  }
+
   isAir() {
     return false
   }
@@ -536,6 +651,17 @@ class Lock1 implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
     g.fillStyle = '#ffcc00'
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+  }
+
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -593,6 +719,19 @@ class Key2 implements Tile {
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
   }
 
+  moveHorizontal(dx: number) {
+    removeLock2()
+    moveToTile(playerx + dx, playery)
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return false
+  }
+
   isAir() {
     return false
   }
@@ -646,6 +785,17 @@ class Lock2 implements Tile {
   draw(g: CanvasRenderingContext2D, x: number, y: number) {
     g.fillStyle = '#00ccff'
     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+  }
+
+  moveHorizontal(dx: number) {
+  }
+
+  isEdible(): boolean {
+    return this.isFlux() || this.isAir()
+  }
+
+  isPushable(): boolean {
+    return false
   }
 
   isAir() {
@@ -738,8 +888,11 @@ let rawMap: RawTile[][] = [
 
 let map: Tile[][] = []
 
+let inputs: Input[] = []
+
 function assertExhausted(x: never): never {
   throw new Error('Unexpected object: ' + x)
+
 }
 
 function transformTile(tile: RawTile) {
@@ -771,6 +924,7 @@ function transformTile(tile: RawTile) {
     default:
       assertExhausted(tile)
   }
+
 }
 
 function transformMap() {
@@ -782,8 +936,6 @@ function transformMap() {
     }
   }
 }
-
-let inputs: Input[] = []
 
 function removeLock1() {
   for (let y = 0; y < map.length; y++) {
@@ -813,22 +965,7 @@ function moveToTile(newx: number, newy: number) {
 }
 
 function moveHorizontal(dx: number) {
-  if (map[playery][playerx + dx].isFlux()
-    || map[playery][playerx + dx].isAir()) {
-    moveToTile(playerx + dx, playery)
-  } else if ((map[playery][playerx + dx].isStone()
-      || map[playery][playerx + dx].isBox())
-    && map[playery][playerx + dx + dx].isAir()
-    && !map[playery + 1][playerx + dx].isAir()) {
-    map[playery][playerx + dx + dx] = map[playery][playerx + dx]
-    moveToTile(playerx + dx, playery)
-  } else if (map[playery][playerx + dx].isKey1()) {
-    removeLock1()
-    moveToTile(playerx + dx, playery)
-  } else if (map[playery][playerx + dx].isKey2()) {
-    removeLock2()
-    moveToTile(playerx + dx, playery)
-  }
+  map[playery][playerx + dx].moveHorizontal(dx)
 }
 
 function moveVertical(dy: number) {
@@ -892,7 +1029,6 @@ function createGraphics() {
   g.clearRect(0, 0, canvas.width, canvas.height)
   return g
 }
-
 
 function drawMap(g: CanvasRenderingContext2D) {
   for (let y = 0; y < map.length; y++) {
