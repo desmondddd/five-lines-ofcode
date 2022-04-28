@@ -1,46 +1,57 @@
 function nextColor(t: TrafficColor) {
-  if (t.color() === 'red') return new Green()
-  else if (t.color() === 'green') return new Yellow()
-  else if (t.color() === 'yellow') return new Red()
+  t.nextColor()
 }
 
 class Car {
-  stop() {}
-  drive() {}
+  stop() { }
+  drive() { }
 }
 
-interface TrafficColor {
-  color(): string;
-
-  check(car: Car): void;
+interface Color {
+  check(car: Car): void
+  nextColor(t: TrafficColor): TrafficColor
 }
 
-class Red implements TrafficColor {
-  color() {
-    return 'red'
-  }
-
-  check(car: Car) {
+class Red implements Color {
+  check(car: Car): void {
     car.stop()
   }
+
+  nextColor(t: TrafficColor): TrafficColor {
+      return new TrafficColor(new Green())
+  }
 }
 
-class Yellow implements TrafficColor {
-  color() {
-    return 'yellow'
-  }
-
-  check(car: Car) {
+class Yellow implements Color {
+  check(car: Car): void {
     car.stop()
   }
+
+  nextColor(t: TrafficColor): TrafficColor {
+    return new TrafficColor(new Red())
+}
 }
 
-class Green implements TrafficColor {
-  color() {
-    return 'green'
-  }
-
-  check(car: Car) {
+class Green implements Color {
+  check(car: Car): void {
     car.drive()
+  }
+
+  nextColor(t: TrafficColor): TrafficColor {
+    return new TrafficColor(new Yellow())
+}
+}
+
+class TrafficColor {
+  constructor(private col: Color) { }
+
+  color() { return this.col }
+
+  check(car: Car) {
+    this.col.check(car)
+  }
+
+  nextColor(): TrafficColor {
+    return this.col.nextColor(this)
   }
 }
